@@ -14,16 +14,18 @@ ClinDrug = '/Users/anirudhrajagopalan/Desktop/DataVizClassRepo/RUTSOM201807DATA5
 clinical = pd.read_csv(ClinDrug)
 
 mergedData = pd.merge(mouse, clinical, how="outer", on=["Mouse ID", "Mouse ID"])
-#mergedData = mergedData.set_index("Mouse ID")
-
-#mergedData = mergedData.rename(columns={"Mouse ID":"Mouse ID", "Drug":"Drug", "Timepoint":"Timepoint", "Tumor Volume (mm3)": "Tumor Volume (mm3)", "Metastatic Sites":"Metastatic Sites"})
-mergedData["Tumor Volume (mm3)"] = mergedData["Tumor Volume (mm3)"].astype(int)
-
-
 
 #creating a scatter plot that shows how the tumor volume changes over time for each treatment
 
-tumorMean1 = mergedData.groupby(["Drug", "Timepoint"]).mean()
+tumorMean1 = mergedData.groupby(["Drug","Timepoint"]).mean()
 del tumorMean1["Metastatic Sites"]
 tumorMean1.head()
+
+"Drug", tumorMean1.keys() #False
+
+x_axis = tumorMean1.astype('category')
+y_axis = tumorMean1["Tumor Volume (mm3)"]
+
+tumorMean1(kind="scatter", x=x_axis, y=y_axis, grid=True, figsize=(20,10),
+           title="Tumor volume")
 
