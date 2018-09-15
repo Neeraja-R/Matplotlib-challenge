@@ -10,38 +10,20 @@ clinicaltrial_data = "data/clinicaltrial_data.csv"
 mouseDrug = '/Users/anirudhrajagopalan/Desktop/DataVizClassRepo/RUTSOM201807DATA5/Tuesday-Thursday/05 - Python Matplotlib/HW5 - Matplotlib/Pymaceuticals/data/mouse_drug_data.csv'
 mouse = pd.read_csv(mouseDrug)
 
-
 ClinDrug = '/Users/anirudhrajagopalan/Desktop/DataVizClassRepo/RUTSOM201807DATA5/Tuesday-Thursday/05 - Python Matplotlib/HW5 - Matplotlib/Pymaceuticals/data/clinicaltrial_data.csv'
 clinical = pd.read_csv(ClinDrug)
 
-mergedData = pd.merge(mouse, clinical, on="Mouse ID", how="outer")
+mergedData = pd.merge(mouse, clinical, how="outer", on=["Mouse ID", "Mouse ID"])
+#mergedData = mergedData.set_index("Mouse ID")
 
-mergedData = mergedData.rename(columns={"Mouse ID":"Mouse ID", "Drug":"Drug", "Timepoint":"Timepoint", "Tumor Volume (mm3)": "Tumor Volume (mm3)", "Metastatic Sites":"Metastatic Sites"})
+#mergedData = mergedData.rename(columns={"Mouse ID":"Mouse ID", "Drug":"Drug", "Timepoint":"Timepoint", "Tumor Volume (mm3)": "Tumor Volume (mm3)", "Metastatic Sites":"Metastatic Sites"})
+mergedData["Tumor Volume (mm3)"] = mergedData["Tumor Volume (mm3)"].astype(int)
 
-
-mergedData["Tumor Volume (mm3)"] = mergedData["Tumor Volume (mm3)"].apply(pd.to_numeric)
-mergedData.dtypes
-
-timeC = mergedData["Timepoint"].count #~50
-timeC
-tumorC = mergedData["Tumor Volume (mm3)"].count #~70
-tumorC
 
 
 #creating a scatter plot that shows how the tumor volume changes over time for each treatment
 
-plot1 = pd.DataFrame(mergedData, columns=["Drug", "Timepoint", "Tumor Volume"], dtype="object")
-plot1
-
-mergedData.plot.scatter = (x= "Timepoint", y= "Treatment", "Tumor Volume (mm3)" c="blue", s=30)
-plt.xlim(0,40)
-plt.ylim(0,200)
-plt.title("Tumor Volume Change Over Time")
-plt.xlabel("Timepoint")
-plt.ylabel("Tumor Volume (mm3)")
-
-plt.show()
-
-
-
+tumorMean1 = mergedData.groupby(["Drug", "Timepoint"]).mean()
+del tumorMean1["Metastatic Sites"]
+tumorMean1.head()
 
