@@ -20,12 +20,12 @@ mergedData = pd.merge(mouse, clinical, how="outer", on=["Mouse ID", "Mouse ID"])
 tumorMean1 = mergedData.groupby(["Drug","Timepoint"]).mean()
 del tumorMean1["Metastatic Sites"]
 tumorMean1.head()
+tumorMean1.reset_index()
+tumorMean1.unstack()  #stacks rows from up/down to horizontal orientation
 
-"Drug", tumorMean1.keys() #False
+tumorMean1_trans = tumorMean1.T  #transpose takes rows and makes them columns
+tumorMean1_trans.stack() #this reorients from horizontal to vertical (with drug as columns because of transpose()
+tumorMean = tumorMean1_trans.stack()
 
-x_axis = tumorMean1.astype('category')
-y_axis = tumorMean1["Tumor Volume (mm3)"]
-
-tumorMean1(kind="scatter", x=x_axis, y=y_axis, grid=True, figsize=(20,10),
-           title="Tumor volume")
+ax1 = tumorMean.plot.scatter(x='Timepoint', y='Tumor Volume (mm3)', c='DarkBlue')
 
