@@ -12,20 +12,12 @@ mouse = pd.read_csv(mouseDrug)
 
 ClinDrug = '/Users/anirudhrajagopalan/Desktop/DataVizClassRepo/RUTSOM201807DATA5/Tuesday-Thursday/05 - Python Matplotlib/HW5 - Matplotlib/Pymaceuticals/data/clinicaltrial_data.csv'
 clinical = pd.read_csv(ClinDrug)
-
 mergedData = pd.merge(mouse, clinical, how="outer", on=["Mouse ID", "Mouse ID"])
-
-#creating a scatter plot that shows how the tumor volume changes over time for each treatment
-
+mergedData = pd.merge(mouse, clinical, how="outer", on=["Mouse ID", "Mouse ID"])
 tumorMean1 = mergedData.groupby(["Drug","Timepoint"]).mean()
 del tumorMean1["Metastatic Sites"]
-tumorMean1.head()
 tumorMean1.reset_index()
-tumorMean1.unstack()  #stacks rows from up/down to horizontal orientation
+tumorMean1_trans = tumorMean1.T
+tumor=tumorMean1_trans.stack(dropna=True)
 
-tumorMean1_trans = tumorMean1.T  #transpose takes rows and makes them columns
-tumorMean1_trans.stack() #this reorients from horizontal to vertical (with drug as columns because of transpose()
-tumorMean = tumorMean1_trans.stack()
-
-ax1 = tumorMean.plot.scatter(x='Timepoint', y='Tumor Volume (mm3)', c='DarkBlue')
-
+tumor.as_matrix()
